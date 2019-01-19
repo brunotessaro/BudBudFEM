@@ -1,6 +1,7 @@
-tecplot
-models 
-bin
-MatrixMaker
+tecplot/
+models/
+bin/
+MatrixMaker/
+.settings/
 
 
