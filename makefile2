@@ -1,0 +1,150 @@
+    
+TARGET = NavierStokes_Liad2019
+MODULES = bin/MODULES.o
+OBJECTS =   $(MODULES) \
+			bin/IOMNGR.o  \
+			bin/CONTRL.o  \
+			bin/ALLOCATIONS.o \
+			bin/MEMORY.o \
+			bin/INELEM.o \
+			bin/INMESH.o \
+			bin/JOINTS.o \
+			bin/MATSET.o \
+			bin/profil.o \
+			bin/aponta.o \
+			bin/grafos.o \
+			bin/sort.o \
+			bin/genrcm.o \
+			bin/splot.o \
+			bin/matrixtrans2.o \
+			bin/fnroot.o \
+			bin/rcm.o \
+			bin/rootls.o \
+			bin/degree.o \
+			bin/LOADS.o \
+			bin/RHSV_READ.o \
+			bin/RHSV_MAKE.o \
+			bin/RHSV_LOAD.o \
+			bin/MATRIZ.o \
+			bin/NavierStokes3D_Solver.o \
+			bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o \
+			bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o \
+			bin/OCTA8_NAVIER_STOKES_3D_MASSA.o \
+			bin/OCTA8_PRESSURE.o \
+			bin/SOLVER.o \
+			bin/getNALHS.o \
+			bin/CROUTFACT.o \
+			bin/oneStepLinearImplicit.o \
+			bin/matvec.o \
+			bin/local.o \
+			bin/ddot.o \
+			bin/FUNC.o \
+			bin/OUTENSIGHT.o
+      
+
+makefile:
+all: bin/$(TARGET)
+
+clean:
+	-rm bin/*.o bin/*.mod bin/$(TARGET)  #$(OBJECTS)
+	
+#NavierStokes_Liad2019 : 
+#	gfortran src/NavierStokes_Liad2019.f90 -o NavierStokes_Liad2019.exe
+	
+bin/$(TARGET) : $(OBJECTS)
+	gfortran -g -O0  src/$(TARGET).f90 $(OBJECTS) -I bin -o bin/$(TARGET)
+
+bin/ALLOCATIONS.o : $(MODULES) bin/MEMORY.o
+	gfortran -g -O0  -c src/ALLOCATIONS/ALLOCATIONS.f90 -I bin -o bin/ALLOCATIONS.o
+	
+bin/CONTRL.o : $(MODULES)
+	gfortran -g -O0  -c src/CONTRL/CONTRL.f90 -I bin -o bin/CONTRL.o
+	
+bin/IOMNGR.o : $(MODULES)
+	gfortran -g -O0  -c src/IOMNGR/IOMNGR.f90 -I bin -o bin/IOMNGR.o
+			
+bin/INMESH.o : $(MODULES)
+	gfortran -g -O0  -c src/INPUTMESH/INMESH.f90 -I bin -o bin/INMESH.o
+	
+bin/INELEM.o : $(MODULES)
+	gfortran -g -O0  -c src/INPUTMESH/INELEM.f90 -I bin -o bin/INELEM.o
+	
+bin/JOINTS.o : $(MODULES)
+	gfortran -g -O0  -c src/INPUTMESH/JOINTS.f90 -I bin -o bin/JOINTS.o
+	
+bin/MATSET.o : $(MODULES)
+	gfortran -g -O0  -c src/INPUTMESH/MATSET.f90 -I bin -o bin/MATSET.o
+	
+bin/LOADS.o : $(MODULES)
+	gfortran -g -O0  -c src/LOADS/LOADS.f90 -I bin -o bin/LOADS.o
+bin/MATRIZ.o : $(MODULES)
+	gfortran -g -O0  -c src/MATRIZ/MATRIZ.f90 -I bin -o bin/MATRIZ.o
+	
+bin/oneStepLinearImplicit.o : $(MODULES)
+	gfortran -g -O0  -c src/SOLVER/oneStepLinearImplicit.f90 -I bin -o bin/oneStepLinearImplicit.o
+bin/getNALHS.o :
+	gfortran -g -O0  -c src/CROUTFACT/getNALHS.f90 -I bin -o bin/getNALHS.o
+bin/CROUTFACT.o :
+	gfortran -g -O0  -c src/CROUTFACT/CROUTFACT.f90 -I bin -o bin/CROUTFACT.o
+	
+	
+bin/matvec.o : bin/local.o
+	gfortran -g -O0  -c src/UTILITIES/matvec.f90 -I bin -o bin/matvec.o
+bin/local.o :
+	gfortran -g -O0  -c src/UTILITIES/local.f90 -I bin -o bin/local.o
+bin/ddot.o :
+	gfortran -g -O0  -c src/UTILITIES/ddot.f90 -I bin -o bin/ddot.o
+bin/FUNC.o :
+	gfortran -g -O0  -c src/UTILITIES/FUNC.f90 -I bin -o bin/FUNC.o
+bin/OUTENSIGHT.o :
+	gfortran -g -O0  -c src/OUTPUT/OUTENSIGHT.f90 -I bin -o bin/OUTENSIGHT.o
+	
+	
+bin/MODULES.o :
+	gfortran -g -O0  -c src/MODULES/MODULES.f90 -J bin -o bin/MODULES.o
+	
+bin/MEMORY.o :
+	gfortran -g -O0  -c src/UTILITIES/MEMORY.f90 -I bin -o bin/MEMORY.o
+	
+bin/SOLVER.o : $(MODULES) bin/NavierStokes3D_Solver.o
+	gfortran -g -O0  -c src/SOLVER/SOLVER.f90 -I bin -o bin/SOLVER.o
+bin/NavierStokes3D_Solver.o : $(MODULES) bin/getNALHS.o
+	gfortran -g -O0  -c src/SOLVER/NavierStokes3D_Solver.f90 -I bin -o bin/NavierStokes3D_Solver.o
+bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o :
+	gfortran -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_CONVEC.f90 -I bin -o bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o
+bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o : 
+	gfortran -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_DIFUS.f90 -I bin -o bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o
+bin/OCTA8_NAVIER_STOKES_3D_MASSA.o :
+	gfortran -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_MASSA.f90 -I bin -o bin/OCTA8_NAVIER_STOKES_3D_MASSA.o
+bin/OCTA8_PRESSURE.o : $(MODULES)
+	gfortran -g -O0  -c src/SOLVER/OCTA8/OCTA8_PRESSURE.f90 -I bin -o bin/OCTA8_PRESSURE.o
+	
+bin/matrixtrans2.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/matrixtrans2.f90 -I bin -o bin/matrixtrans2.o
+bin/profil.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/profil.f90 -I bin -o bin/profil.o
+bin/aponta.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/aponta.f90 -I bin -o bin/aponta.o
+bin/grafos.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/grafos.f90 -I bin -o bin/grafos.o
+bin/sort.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/sort.f90 -I bin -o bin/sort.o
+bin/genrcm.o : bin/rcm.o bin/fnroot.o
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/genrcm.f90 -I bin -o bin/genrcm.o	
+bin/splot.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/splot.f90 -I bin -o bin/splot.o
+bin/fnroot.o : bin/rootls.o
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/fnroot.f90 -I bin -o bin/fnroot.o
+bin/rcm.o : bin/degree.o
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/rcm.f90 -I bin -o bin/rcm.o
+bin/rootls.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/rootls.f90 -I bin -o bin/rootls.o
+bin/degree.o : 
+	gfortran -g -O0  -c src/INPUTMESH/CuthillMckee/degree.f90 -I bin -o bin/degree.o
+	
+bin/RHSV_READ.o : 
+	gfortran -g -O0  -c src/LOADS/RHSV_READ.f90 -I bin -o bin/RHSV_READ.o
+bin/RHSV_MAKE.o : 
+	gfortran -g -O0  -c src/LOADS/RHSV_MAKE.f90 -I bin -o bin/RHSV_MAKE.o
+bin/RHSV_LOAD.o : 
+	gfortran -g -O0  -c src/LOADS/RHSV_LOAD.f90 -I bin -o bin/RHSV_LOAD.o

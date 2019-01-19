@@ -1,0 +1,16 @@
+FORMAT
+type:					ensight
+			
+GEOMETRY                                                       
+model:		             model01.GEO
+          
+VARIABLE
+vector per node:	velocity	OUT2/model01.U****                                            
+            
+TIME
+time set:      1
+number of steps:       10
+filename start number:                1
+filename increment:      001
+time values file: OUT2/time.out
+

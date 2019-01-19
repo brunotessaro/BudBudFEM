@@ -1,0 +1,254 @@
+﻿/PREP7  
+
+L = 20
+H = 9
+R = 0.5
+a = 20*2.4/(8.3+2.4)
+Vx = 1
+nCil = 1
+dXcil = a/2
+
+nglob = 5
+nellim = 10
+nelcil = 100
+
+esplim = 0.1
+Rlim = R+esplim
+
+elcamlim = esplim/nellim
+elcili = 2*3.14159265359*R/nelcil
+elcili2 = 2*3.14159265359*Rlim/nelcil
+elcont = elcili2*3.0
+elout =  elcili2*1.2
+
+elcamlim2 = (elout+elcili2)/2.0
+Rlim2 = R+10.0*esplim
+
+/PREP7  
+
+!*   Define o elemento triangular quadratico a ser utilizado:
+ET,1,plane 183  
+
+!*   Criando o retangulo 1: WPx, WPy, Widht, High
+BLC4,0,-H/2,H,H
+ASEL, ALL,
+CM, dominio, AREA
+
+*do,i,0,nCil-1,1														 !*
+		xc = a + (i* dXcil)
+		!*   Criando o circulo: WPx, WPy, radius
+		CYL4,xc,0,R 
+		LSEL,ALL
+		LSEL, ALL
+		ASEL, ALL,
+		CMSEL, U, dominio, AREA
+		CM, recorte1, AREA
+		CYL4,xc,0,Rlim  
+		ASEL, ALL,
+		CMSEL, U, dominio, AREA
+		CMSEL, U, recorte1, AREA
+		CM, recorte2, AREA
+		CYL4,xc,0,Rlim2  
+		ASEL, ALL,
+		CMSEL, U, dominio, AREA
+		CMSEL, U, recorte1, AREA
+		CMSEL, U, recorte2, AREA
+		CM, recorte3, AREA
+		ASEL, ALL
+		!*   Subtrai a área criada da primeira (No caso, circulo do retangulo)
+		ASBA,       dominio,       recorte1
+		ASEL, ALL,
+		CMSEL, U, recorte2, AREA
+		CMSEL, U, recorte3, AREA
+		CM, dominio, AREA
+		CYL4,xc,0,R  
+		ASEL, ALL,
+		CMSEL, U, recorte2, AREA
+		CMSEL, U, recorte3, AREA
+		CMSEL, U, dominio, AREA
+		CM, recorte1, AREA
+		ASEL,ALL
+		ASBA,       recorte2,       recorte1
+		CYL4,xc,0,R  
+		ASEL, ALL,
+		CMSEL, U, recorte2, AREA
+		CMSEL, U, recorte3, AREA
+		CMSEL, U, dominio, AREA
+		CM, recorte1, AREA
+		ASEL,ALL
+		ASBA,       recorte3,       recorte1
+		ASEL, ALL,
+		CMSEL, U, dominio, AREA
+		CM, recorte, AREA
+		!*ASEL,ALL
+		CMSEL, S, dominio, AREA
+		CMSEL, S, dominio, AREA3
+		AOVLAP,       ALL
+		ASEL,ALL
+		AOVLAP,       ALL
+		ASEL, ALL,
+		CM, dominio, AREA
+*enddo	
+
+!*   Criando os retangulos 2 e 3 e 4: WPx, WPy, Widht, High
+BLC4,H,-H/2,L-H,H/2
+BLC4,H,0,L-H,H/2
+BLC4,-elcont*2,-H/2,elcont*2,H
+ASEL, ALL,
+CMSEL, U, recorte, AREA
+CM, dominio, AREA
+
+
+NUMMRG, ALL
+NUMCMP, ALL
+
+LSEL, ALL
+LSEL, S, LOC, X, -elcont*2, -elcont*2
+CM, inlet, LINE
+LSEL, S, LOC, X, L, L
+CM, outlet, LINE
+LSEL, S, LOC, Y, -H/2, -H/2
+LSEL, A, LOC, Y, H/2, H/2
+CM, noflux, LINE
+LSEL, S, LOC, Y, 0.0, 0.0
+LSEL, U, LOC, X, H, H
+LSEL, U, LOC, X, L, L
+LSEL, U, LOC, X, 0.0, 0.0
+LSEL, U, LOC, X, a-rlim, a+rlim
+CM, middle, LINE
+LSEL, S, LOC, X, H, H
+LSEL, A, LOC, X, H, L
+CM, refinecont, LINE
+CMSEL, S, noflux, LINE
+CMSEL, A, middle, LINE
+CMSEL, U, refinecont, LINE
+LSEL, U, LOC, X, a+r, L
+CM, norefinecont, LINE
+CMSEL, S, middle, LINE
+LSEL, U, LOC, X, 0.0, a
+CM, middle, LINE
+LSEL, ALL,
+
+LSEL, ALL
+LSEL, S, LOC, X, a-r, a+r
+LSEL, R, LOC, Y, -r, +r
+CMSEL, S, recorte, AREA
+LSLA,U 
+LSEL, R, LOC, Y, -r, +r
+CM, rigidbody, LINE
+
+KSEL, ALL
+KSEL, S, LOC, X, a-rlim, a-rlim
+KSEL, A, LOC, X, a+rlim, a+rlim
+KSEL, R, LOC, Y, 0.0,0.0
+LSLK,S 
+CMSEL, U, rigidbody, LINE
+CM, camadalimite, LINE
+
+LSEL, ALL
+LSEL, S, LOC, X, a-rlim2, a+rlim2
+LSEL, R, LOC, Y, -rlim2, +rlim2
+CMSEL, U, rigidbody, LINE
+CMSEL, U, camadalimite, LINE
+CM, camadalimite2, LINE
+
+CMSEL, S, RigidBody, LINE
+CMSEL, A, camadalimite, LINE
+KSLL, S  
+KSEL, R, LOC, Y, 0.0, 0.0
+KSEL, R, LOC, X, 0.0, a
+*GET, p1, KP, 0, NUM, MIN
+*GET, p2, KP, 0, NUM, MAX
+LSTR, p1, p2
+KSLL, S  
+KSEL, R, LOC, Y, 0.0, 0.0
+KSEL, R, LOC, X, a, a+1.1*Rlim
+*GET, p1, KP, 0, NUM, MIN
+*GET, p2, KP, 0, NUM, MAX
+LSTR, p1, p2
+KSLL, S  
+KSEL, R, LOC, X, a, a
+KSEL, R, LOC, Y, 0, 1.1*Rlim
+*GET, p1, KP, 0, NUM, MIN
+*GET, p2, KP, 0, NUM, MAX
+LSTR, p1, p2
+KSLL, S  
+KSEL, R, LOC, X, a, a
+KSEL, R, LOC, Y, -1.1*Rlim, 0
+*GET, p1, KP, 0, NUM, MIN
+*GET, p2, KP, 0, NUM, MAX
+LSTR, p1, p2
+CMSEL, U, RigidBody, LINE
+CMSEL, U, camadalimite, LINE
+CM, camadalimite3, LINE
+
+CMSEL, S, inlet, LINE
+DL, ALL, , UX, Vx
+DL, ALL, , UY, 0
+CMSEL, S, noflux, LINE
+DL, ALL, , UY, 0
+CMSEL, S, RigidBody, LINE
+DL, ALL, , UX, 0
+DL, ALL, , UY, 0
+
+CMSEL, S, RigidBody, AREA
+ASLL,S  
+MSHKEY, 1
+CMSEL, S, camadalimite3,  LINE
+ASBL, ALL, ALL, , DELETE, DELETE
+CM, camadalimitearea, AREA
+CM, camadalimite3, LINE
+
+CMSEL, S, inlet,  LINE
+CMSEL, A, norefinecont, LINE
+LESIZE, ALL, elcont
+
+CMSEL, S, camadalimite3,  LINE
+LESIZE, ALL, elcamlim
+
+CMSEL, S, RigidBody, LINE
+LESIZE, ALL, elcili
+
+CMSEL, S, CamadaLimite, LINE
+LESIZE, ALL, elcili2
+
+CMSEL, S, CamadaLimite2, LINE
+LESIZE, ALL, elcamlim2
+
+CMSEL, S, refinecont, LINE
+CMSEL, A, middle, LINE
+LESIZE, ALL, elout
+
+
+ALLSEL, ALL
+NUMMRG, ALL
+NUMCMP, ALL
+
+AGLUE,ALL
+
+CMSEL, ALL
+ASEL, ALL
+MSHAPE,1,2D 
+ASEL, S, LOC, X, -10.0, 0.0
+ASEL, A, LOC, X, 2*a, L
+CMSEL, A, camadalimitearea, AREA
+MSHKEY, 1
+AMESH, ALL
+ALLSEL, ALL
+NUMMRG, ALL
+NUMCMP, ALL
+ASEL, U, LOC, X, -10.0, 0.0
+ASEL, U, LOC, X, 2*a, L
+CMSEL, U, camadalimitearea, AREA
+MSHKEY, 0
+AMESH, ALL
+
+SBCTRAN 
+ALLSEL, ALL
+NUMMRG, ALL
+NUMCMP, ALL
+
+NSEL, S, LOC, X, -elcont*2.00, -elcont*1.25
+D,ALL, ,1.0, , , ,UX, , , , , 
+D,ALL, ,0.0, , , ,UY, , , , , 
+

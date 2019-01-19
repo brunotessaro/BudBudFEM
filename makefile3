@@ -1,0 +1,150 @@
+    
+TARGET = NavierStokes_Liad2019
+MODULES = bin/MODULES.o
+OBJECTS =   $(MODULES) \
+			bin/IOMNGR.o  \
+			bin/CONTRL.o  \
+			bin/ALLOCATIONS.o \
+			bin/MEMORY.o \
+			bin/INELEM.o \
+			bin/INMESH.o \
+			bin/JOINTS.o \
+			bin/MATSET.o \
+			bin/profil.o \
+			bin/aponta.o \
+			bin/grafos.o \
+			bin/sort.o \
+			bin/genrcm.o \
+			bin/splot.o \
+			bin/matrixtrans2.o \
+			bin/fnroot.o \
+			bin/rcm.o \
+			bin/rootls.o \
+			bin/degree.o \
+			bin/LOADS.o \
+			bin/RHSV_READ.o \
+			bin/RHSV_MAKE.o \
+			bin/RHSV_LOAD.o \
+			bin/MATRIZ.o \
+			bin/NavierStokes3D_Solver.o \
+			bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o \
+			bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o \
+			bin/OCTA8_NAVIER_STOKES_3D_MASSA.o \
+			bin/OCTA8_PRESSURE.o \
+			bin/SOLVER.o \
+			bin/getNALHS.o \
+			bin/CROUTFACT.o \
+			bin/oneStepLinearImplicit.o \
+			bin/matvec.o \
+			bin/local.o \
+			bin/ddot.o \
+			bin/FUNC.o \
+			bin/OUTENSIGHT.o
+      
+
+makefile:
+all: bin/$(TARGET)
+
+clean:
+	-rm bin/*.o bin/*.mod bin/$(TARGET)  #$(OBJECTS)
+	
+#NavierStokes_Liad2019 : 
+#	ifort src/NavierStokes_Liad2019.f90 -o NavierStokes_Liad2019.exe
+	
+bin/$(TARGET) : $(OBJECTS)
+	ifort -g -O0  src/$(TARGET).f90 $(OBJECTS) -Ibin -o bin/$(TARGET)
+
+bin/ALLOCATIONS.o : $(MODULES) bin/MEMORY.o
+	ifort -g -O0  -c src/ALLOCATIONS/ALLOCATIONS.f90 -Ibin -o bin/ALLOCATIONS.o
+	
+bin/CONTRL.o : $(MODULES)
+	ifort -g -O0  -c src/CONTRL/CONTRL.f90 -Ibin -o bin/CONTRL.o
+	
+bin/IOMNGR.o : $(MODULES)
+	ifort -g -O0  -c src/IOMNGR/IOMNGR.f90 -Ibin -o bin/IOMNGR.o
+			
+bin/INMESH.o : $(MODULES)
+	ifort -g -O0  -c src/INPUTMESH/INMESH.f90 -Ibin -o bin/INMESH.o
+	
+bin/INELEM.o : $(MODULES)
+	ifort -g -O0  -c src/INPUTMESH/INELEM.f90 -Ibin -o bin/INELEM.o
+	
+bin/JOINTS.o : $(MODULES)
+	ifort -g -O0  -c src/INPUTMESH/JOINTS.f90 -Ibin -o bin/JOINTS.o
+	
+bin/MATSET.o : $(MODULES)
+	ifort -g -O0  -c src/INPUTMESH/MATSET.f90 -Ibin -o bin/MATSET.o
+	
+bin/LOADS.o : $(MODULES)
+	ifort -g -O0  -c src/LOADS/LOADS.f90 -Ibin -o bin/LOADS.o
+bin/MATRIZ.o : $(MODULES)
+	ifort -g -O0  -c src/MATRIZ/MATRIZ.f90 -Ibin -o bin/MATRIZ.o
+	
+bin/oneStepLinearImplicit.o : $(MODULES)
+	ifort -g -O0  -c src/SOLVER/oneStepLinearImplicit.f90 -Ibin -o bin/oneStepLinearImplicit.o
+bin/getNALHS.o :
+	ifort -g -O0  -c src/CROUTFACT/getNALHS.f90 -Ibin -o bin/getNALHS.o
+bin/CROUTFACT.o :
+	ifort -g -O0  -c src/CROUTFACT/CROUTFACT.f90 -Ibin -o bin/CROUTFACT.o
+	
+	
+bin/matvec.o : bin/local.o
+	ifort -g -O0  -c src/UTILITIES/matvec.f90 -Ibin -o bin/matvec.o
+bin/local.o :
+	ifort -g -O0  -c src/UTILITIES/local.f90 -Ibin -o bin/local.o
+bin/ddot.o :
+	ifort -g -O0  -c src/UTILITIES/ddot.f90 -Ibin -o bin/ddot.o
+bin/FUNC.o :
+	ifort -g -O0  -c src/UTILITIES/FUNC.f90 -Ibin -o bin/FUNC.o
+bin/OUTENSIGHT.o :
+	ifort -g -O0  -c src/OUTPUT/OUTENSIGHT.f90 -Ibin -o bin/OUTENSIGHT.o
+	
+	
+bin/MODULES.o :
+	ifort -g -O0  -c src/MODULES/MODULES.f90 -module bin -o bin/MODULES.o
+	
+bin/MEMORY.o :
+	ifort -g -O0  -c src/UTILITIES/MEMORY.f90 -Ibin -o bin/MEMORY.o
+	
+bin/SOLVER.o : $(MODULES) bin/NavierStokes3D_Solver.o
+	ifort -g -O0  -c src/SOLVER/SOLVER.f90 -Ibin -o bin/SOLVER.o
+bin/NavierStokes3D_Solver.o : $(MODULES) bin/getNALHS.o
+	ifort -g -O0  -c src/SOLVER/NavierStokes3D_Solver.f90 -Ibin -o bin/NavierStokes3D_Solver.o
+bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o :
+	ifort -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_CONVEC.f90 -Ibin -o bin/OCTA8_NAVIER_STOKES_3D_CONVEC.o
+bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o : 
+	ifort -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_DIFUS.f90 -Ibin -o bin/OCTA8_NAVIER_STOKES_3D_DIFUS.o
+bin/OCTA8_NAVIER_STOKES_3D_MASSA.o :
+	ifort -g -O0  -c src/SOLVER/OCTA8/OCTA8_NAVIER_STOKES_3D_MASSA.f90 -Ibin -o bin/OCTA8_NAVIER_STOKES_3D_MASSA.o
+bin/OCTA8_PRESSURE.o : $(MODULES)
+	ifort -g -O0  -c src/SOLVER/OCTA8/OCTA8_PRESSURE.f90 -Ibin -o bin/OCTA8_PRESSURE.o
+	
+bin/matrixtrans2.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/matrixtrans2.f90 -Ibin -o bin/matrixtrans2.o
+bin/profil.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/profil.f90 -Ibin -o bin/profil.o
+bin/aponta.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/aponta.f90 -Ibin -o bin/aponta.o
+bin/grafos.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/grafos.f90 -Ibin -o bin/grafos.o
+bin/sort.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/sort.f90 -Ibin -o bin/sort.o
+bin/genrcm.o : bin/rcm.o bin/fnroot.o
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/genrcm.f90 -Ibin -o bin/genrcm.o	
+bin/splot.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/splot.f90 -Ibin -o bin/splot.o
+bin/fnroot.o : bin/rootls.o
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/fnroot.f90 -Ibin -o bin/fnroot.o
+bin/rcm.o : bin/degree.o
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/rcm.f90 -Ibin -o bin/rcm.o
+bin/rootls.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/rootls.f90 -Ibin -o bin/rootls.o
+bin/degree.o : 
+	ifort -g -O0  -c src/INPUTMESH/CuthillMckee/degree.f90 -Ibin -o bin/degree.o
+	
+bin/RHSV_READ.o : 
+	ifort -g -O0  -c src/LOADS/RHSV_READ.f90 -Ibin -o bin/RHSV_READ.o
+bin/RHSV_MAKE.o : 
+	ifort -g -O0  -c src/LOADS/RHSV_MAKE.f90 -Ibin -o bin/RHSV_MAKE.o
+bin/RHSV_LOAD.o : 
+	ifort -g -O0  -c src/LOADS/RHSV_LOAD.f90 -Ibin -o bin/RHSV_LOAD.o

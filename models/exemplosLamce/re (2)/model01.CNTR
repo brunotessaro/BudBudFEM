@@ -1,0 +1,81 @@
+# HEADER (CHARACTER*80 )
+Convecção de calor em elemento triangular quadrático
+
+#  NUMNP ,     NUME,    NUMMAT,    NNOEL,   NGL  , NOPLOT , NGLPLOT , iSOLVER_TYPE , iREORDERING ,     KMAX ,    LMAX ,     ETOL ,      niter,    nRigidBody    elrefp** (5 inteiros free format)  
+    295704         147336      1          6       2       0         0            4            1             500      20000      1.0E-09     4           1              1
+
+#  TIMEF ,       DT,     NIMP,  DAMP1, DAMP2 , ALPHA , BETA , GAMMA ,   IFUNC , NPTF,  A_FUNC,  B_FUNC,  OMEGA_FUNC ,  PHASE_FUNC , grav ** ( free format) 
+    1.0E+02          5.0E-3    300      0.0    0.0     0.5     0.0     0.0      3      3      0.0       0.0      0.0            0.0         0.00
+
+#  TIME,      VALUE
+   0.0        0.0E+00
+   1.0        1.0E+00
+   300.0      1.0E+00
+
+#  etype 01234 (epd, ept, calor2d, calor3d, elasticidade3d, convec2D) ** (1 character*14 formatted)
+NavierStokes2D
+
+#  No mat,   prop1 (VISCOSIDADE),   prop2(POISSON),    prop3(Rho),          prop4,      prop5,  prop6,   prop7,  prop8,   prop9,  prop10 **(NUMMAT LINES, 11 caracter free format)
+    1                   1.0E+00          0.49999995                8.0E+02             0.000       0.000   0.000    0.000   0.000    0.000   0.000
+
+
+
+#   README
+# 
+#   NUMNP   = Numero de nos da malha
+#   NUME    = Numero de elementos da malha
+#   NUMMAT  = Numero de materias da malha
+#   NNOEL   = Numero de nos de cada elemento da malha
+#   NGL     = Numero de graus de liberdade por no
+#
+#       *** Para elasticidade 2d, 
+#           etype = EPT
+#
+#           prop1 = modulo de elasticidade
+#           prop2 = coef. poisson
+#           prop3 = espessura do elemento
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0
+#
+#       *** Para elasticidade 2d, 
+#           etype = EPD
+#
+#           prop1 = modulo de elasticidade
+#           prop2 = coef. poisson
+#           prop3 = nao usada
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0
+#
+#       *** Para elasticidade 3d, 
+#           etype = ELASTICIDADE3d
+#
+#           prop1 = modulo de elasticidade
+#           prop2 = coef. poisson
+#           prop3 = nao usada
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0
+#
+#       *** Para calor 2d, etype = calor2d
+#           prop1 = condutividade termica xx
+#           prop2 = condutividade termica yy
+#           prop3 = calor especifico
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0 
+#
+#       *** Para placa 
+#           etype = tria3_plate
+#
+#           prop1 = modulo de elasticidade
+#           prop2 = coef. poisson
+#           prop3 = espessura do elemento
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0
+#
+#       *** Para elemento de barra/treliça 1d 
+#           etype = truss3d
+#
+#           prop1 = modulo de elasticidade
+#           prop2 = area da seção transversal
+#           prop3 = nao usado, colocar 0.0
+#           prop4 = massa especifica 
+#           prop5 a prop10 = nao usados, colocar 0.0
